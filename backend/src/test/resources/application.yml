@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:pickerballTest;DB_CLOSE_DELAY=-1
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+  h2:
+    console:
+      enabled: false
+
+app:
+  jwt:
+    secret: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    access-token-expiration-ms: 3600000
+  cors:
+    allowed-origins: http://localhost:4200

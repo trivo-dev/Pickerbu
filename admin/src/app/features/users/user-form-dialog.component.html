@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>{{ data.mode === 'create' ? 'Thêm người dùng' : 'Sửa người dùng' }}</h2>
+<form mat-dialog-content [formGroup]="form" (ngSubmit)="save()">
+  @if (err()) {
+    <p class="error">{{ err() }}</p>
+  }
+  @if (data.mode === 'edit' && data.user) {
+    <p class="hint-line">Username: <strong>{{ data.user.username }}</strong></p>
+  }
+  @if (data.mode === 'create') {
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" autocomplete="username" />
+    </mat-form-field>
+  }
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" formControlName="email" />
+    <mat-hint>Chỉ xem khi sửa</mat-hint>
+  </mat-form-field>
+  @if (data.mode === 'create') {
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Mật khẩu</mat-label>
+      <input matInput type="password" formControlName="password" autocomplete="new-password" />
+    </mat-form-field>
+  }
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Tên</mat-label>
+    <input matInput formControlName="firstName" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Họ</mat-label>
+    <input matInput formControlName="lastName" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Số điện thoại</mat-label>
+    <input matInput formControlName="phone" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Địa chỉ</mat-label>
+    <input matInput formControlName="address" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Trình độ (level)</mat-label>
+    <input matInput formControlName="level" placeholder="Beginner, Intermediate…" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="field">
+    <mat-label>Loại (user_type)</mat-label>
+    <mat-select formControlName="userType">
+      <mat-option value="PLAYER">Người chơi</mat-option>
+      <mat-option value="OWNER">Chủ sân</mat-option>
+      <mat-option value="ADMIN">Quản trị</mat-option>
+    </mat-select>
+  </mat-form-field>
+  @if (data.mode === 'edit') {
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Trạng thái</mat-label>
+      <mat-select formControlName="active">
+        <mat-option [value]="true">Hoạt động</mat-option>
+        <mat-option [value]="false">Vô hiệu hóa</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="field">
+      <mat-label>Đặt mật khẩu mới (tùy chọn)</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="newPassword"
+        autocomplete="new-password"
+      />
+    </mat-form-field>
+  }
+</form>
+<div mat-dialog-actions align="end">
+  <button mat-button type="button" [disabled]="busy()" (click)="cancel()">Hủy</button>
+  <button mat-flat-button color="primary" [disabled]="busy()" (click)="save()">
+    @if (busy()) {
+      <mat-spinner class="sp" diameter="20" />
+    } @else {
+      Lưu
+    }
+  </button>
+</div>
