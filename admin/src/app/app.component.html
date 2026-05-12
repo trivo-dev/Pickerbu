@@ -1,0 +1,98 @@
+@if (auth.user()) {
+  <mat-sidenav-container class="admin-shell" [hasBackdrop]="isMobile()">
+    <mat-sidenav
+      class="sidenav"
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="!isMobile() || sidenavOpen()"
+      (openedChange)="onSidenavChanged($event)"
+      [fixedInViewport]="true"
+    >
+      <div class="sidenav-header">
+        <div class="sidenav-brand">PickleBall</div>
+        <div class="sidenav-tagline">Quản trị hệ thống</div>
+      </div>
+      <mat-nav-list>
+        <a
+          mat-list-item
+          routerLink="/"
+          routerLinkActive="nav-link-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeSidenavAfterNav()"
+        >
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Tổng quan</span>
+        </a>
+        <a
+          mat-list-item
+          routerLink="/account"
+          routerLinkActive="nav-link-active"
+          (click)="closeSidenavAfterNav()"
+        >
+          <mat-icon matListItemIcon>person</mat-icon>
+          <span matListItemTitle>Tài khoản</span>
+        </a>
+        @if (auth.user()?.userType === "ADMIN") {
+          <mat-divider class="nav-divider" />
+          <div class="nav-section-label" role="heading" aria-level="2">Dữ liệu</div>
+          <a
+            mat-list-item
+            routerLink="/users"
+            routerLinkActive="nav-link-active"
+            (click)="closeSidenavAfterNav()"
+          >
+            <mat-icon matListItemIcon>group</mat-icon>
+            <span matListItemTitle>Người dùng</span>
+          </a>
+          <a
+            mat-list-item
+            routerLink="/products"
+            routerLinkActive="nav-link-active"
+            (click)="closeSidenavAfterNav()"
+          >
+            <mat-icon matListItemIcon>place</mat-icon>
+            <span matListItemTitle>Sản phẩm / địa điểm</span>
+          </a>
+        }
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="sidenav-content">
+      <header class="topbar">
+        @if (isMobile()) {
+          <button
+            type="button"
+            mat-icon-button
+            (click)="openSidenav()"
+            class="topbar-menu"
+            aria-label="Mở menu"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+        }
+        <h1 class="topbar-title">{{ currentTitle() }}</h1>
+        <span class="spacer"></span>
+        <div class="topbar-user" title="{{ auth.user()?.email }}">
+          <span class="topbar-name">{{ auth.user()?.displayName }}</span>
+          <span class="topbar-role">{{ auth.user()?.userType }}</span>
+        </div>
+        <button
+          type="button"
+          mat-icon-button
+          (click)="auth.logout()"
+          class="topbar-action"
+          aria-label="Đăng xuất"
+          title="Đăng xuất"
+        >
+          <mat-icon>logout</mat-icon>
+        </button>
+      </header>
+      <div class="content-canvas">
+        <router-outlet />
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+} @else {
+  <div class="auth-standalone">
+    <router-outlet />
+  </div>
+}

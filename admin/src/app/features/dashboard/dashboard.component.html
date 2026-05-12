@@ -1,0 +1,30 @@
+<div class="page">
+  <div class="panel panel-main">
+    <h2 class="panel-title">Tổng quan</h2>
+    <p class="greeting">Xin chào, <strong>{{ auth.user()?.displayName }}</strong></p>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <span class="label">Email</span>
+        <span class="value">{{ auth.user()?.email }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Username</span>
+        <span class="value">{{ auth.user()?.username }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Loại (user_type)</span>
+        <span class="value">{{ auth.user()?.userType }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Trình độ (level)</span>
+        <span class="value">{{ auth.user()?.level || "–" }}</span>
+      </div>
+    </div>
+  </div>
+  @if (auth.user()?.userType === "ADMIN") {
+    <div class="panel panel-hint">
+      <h3 class="panel-subtitle">Truy cập nhanh</h3>
+      <p class="hint-text">Dùng menu bên trái: người dùng, sản phẩm / địa điểm (`products`).</p>
+    </div>
+  }
+</div>

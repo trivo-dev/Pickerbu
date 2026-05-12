@@ -1,0 +1,42 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets & local env (keep examples tracked)
+.env
+.env.*
+!.env.example
+!.env*.example
+
+# IDE / editors
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+*.sublime-workspace
+
+# VS Code — ignore editor noise; keep shared config via un-ignore below
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+*.code-workspace
+.vscode-test/
+
+# Logs & temp
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# Tooling / caches (root or any package)
+node_modules/
+coverage/
+.nyc_output/
+.cache/

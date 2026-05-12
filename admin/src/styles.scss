@@ -1,0 +1,76 @@
+/* Google / Material hệ màu ứng dụng (trùng tông theme Material Azure Blue) */
+:root {
+  --g-primary: #1a73e8;
+  --g-primary-darker: #1967d2;
+  --g-on-surface: #202124;
+  --g-on-surface-variant: #5f6368;
+  --g-surface: #fff;
+  --g-surface-container: #f8f9fa;
+  --g-surface-dim: #f1f3f4;
+  --g-outline: #dadce0;
+  --g-link: #1a73e8;
+  --g-nav-active-bg: #e8f0fe;
+  --g-shadow-1: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--g-on-surface);
+  background: var(--g-surface-container);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0.2px;
+}
+
+a {
+  color: var(--g-link);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Thẻ nội dung: bóng kiểu elevation Material / Google */
+.mat-mdc-card,
+mat-card {
+  --mdc-elevated-card-container-shape: 8px;
+  border-radius: 8px;
+  box-shadow: var(--g-shadow-1) !important;
+  border: 1px solid var(--g-outline) !important;
+  background: var(--g-surface) !important;
+}
+
+mat-card-header .mat-mdc-card-title,
+mat-card-title,
+.mat-mdc-card-header-text .mat-mdc-card-title {
+  color: var(--g-on-surface) !important;
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+mat-card-header .mat-mdc-card-subtitle,
+mat-card-subtitle,
+.mat-mdc-card-header-text .mat-mdc-card-subtitle {
+  color: var(--g-on-surface-variant) !important;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+/* Bảng: header rõ, viền nhẹ */
+.mat-mdc-table {
+  background: var(--g-surface);
+}
+
+/* Paginator: nền trắng, viền trên */
+.mat-mdc-paginator {
+  background: var(--g-surface) !important;
+  border-top: 1px solid var(--g-outline);
+}

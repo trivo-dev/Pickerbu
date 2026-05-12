@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>
+  @if (data.mode === "create") {
+    Thêm sản phẩm / địa điểm
+  } @else {
+    Sửa sản phẩm / địa điểm
+  }
+</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Tiêu đề</mat-label>
+      <input matInput formControlName="title" autocomplete="off" />
+      @if (form.controls.title.touched && form.controls.title.hasError("required")) {
+        <mat-error>Bắt buộc</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Mô tả</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Địa điểm / địa chỉ</mat-label>
+      <input matInput formControlName="location" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Vĩ độ (lat)</mat-label>
+      <input matInput formControlName="lat" inputmode="decimal" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Kinh độ (lng)</mat-label>
+      <input matInput formControlName="lng" inputmode="decimal" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Đánh giá TB (rate)</mat-label>
+      <input matInput formControlName="rate" inputmode="decimal" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Trạng thái</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="active">Hoạt động</mat-option>
+        <mat-option value="inactive">Không hoạt động</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>ID user chủ (tùy chọn)</mat-label>
+      <input matInput formControlName="ownerUserId" type="text" inputmode="numeric" />
+      <mat-hint>Gõ ID từ trang “Người dùng”; để trống nếu chưa gán</mat-hint>
+    </mat-form-field>
+    @if (err()) {
+      <p class="err">{{ err() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()" [disabled]="busy()">Hủy</button>
+  <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="busy()">
+    @if (busy()) {
+      <mat-spinner diameter="20" />
+    } @else {
+      Lưu
+    }
+  </button>
+</mat-dialog-actions>
