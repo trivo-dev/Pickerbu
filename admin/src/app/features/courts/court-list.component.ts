@@ -20,6 +20,9 @@ import { AdminProductsService } from '../../core/services/admin-products.service
 import type { PageResponse } from '../../core/services/admin-users.service';
 import { ConfirmData, ConfirmDialogComponent } from '../users/confirm-dialog.component';
 import { CourtFormDialogComponent } from './court-form-dialog.component';
+import type { CourtFormDialogResult } from './court-form-dialog.types';
+import { ProductPricingDialogComponent } from './product-pricing-dialog.component';
+import type { ProductPricingDialogResult } from './product-pricing-dialog.component';
 
 @Component({
   selector: 'app-court-list',
@@ -122,32 +125,72 @@ export class CourtListComponent implements OnInit {
     this.dialog
       .open(CourtFormDialogComponent, {
         data: { mode: 'create' },
-        width: '520px',
+        width: '560px',
         maxWidth: '95vw',
         disableClose: true,
       })
       .afterClosed()
-      .subscribe((ok) => {
-        if (ok) {
+      .subscribe((result: CourtFormDialogResult | undefined) => {
+        if (!result) {
+          return;
+        }
+        if (typeof result === 'object' && result.saved && result.newProductId != null) {
           this.load();
+          this.openEditByProductId(result.newProductId);
+          return;
         }
       });
   }
 
   protected openEdit(p: Product): void {
-    this.dialog
-      .open(CourtFormDialogComponent, {
-        data: { mode: 'edit', product: p },
-        width: '520px',
-        maxWidth: '95vw',
-        disableClose: true,
-      })
-      .afterClosed()
-      .subscribe((ok) => {
-        if (ok) {
-          this.load();
-        }
-      });
+    this.openEditByProductId(p.id);
+  }
+
+  /** Luôn fetch đầy đủ `images` trước khi mở form (upload gallery). */
+  private openEditByProductId(productId: number): void {
+    this.api.getById(productId).subscribe({
+      next: (full) => {
+        this.dialog
+          .open(CourtFormDialogComponent, {
+            data: { mode: 'edit', product: full },
+            width: '560px',
+            maxWidth: '95vw',
+            disableClose: true,
+          })
+          .afterClosed()
+          .subscribe((ok) => {
+            if (ok) {
+              this.load();
+            }
+          });
+      },
+      error: (e: HttpErrorResponse) => {
+        this.snack.open(this.readErr(e), 'Đóng', { duration: 5000 });
+      },
+    });
+  }
+
+  /** Giá theo khung giờ UTC + mapping tiện ích (REST admin). */
+  protected openPricing(p: Product): void {
+    this.api.getById(p.id).subscribe({
+      next: (full) => {
+        this.dialog
+          .open(ProductPricingDialogComponent, {
+            data: { product: full },
+            width: '640px',
+            maxWidth: '96vw',
+          })
+          .afterClosed()
+          .subscribe((r: ProductPricingDialogResult | undefined) => {
+            if (r?.savedUtilities) {
+              this.load();
+            }
+          });
+      },
+      error: (e: HttpErrorResponse) => {
+        this.snack.open(this.readErr(e), 'Đóng', { duration: 5000 });
+      },
+    });
   }
 
   protected confirmDelete(p: Product): void {
