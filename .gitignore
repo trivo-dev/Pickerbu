@@ -2,41 +2,65 @@
 .DS_Store
 Thumbs.db
 
-# Secrets & local env (keep examples tracked)
-.env
-.env.*
-!.env.example
-!.env*.example
-
-# IDE / editors
+# IDE & editors
 .idea/
 *.iml
 .project
 .classpath
+.c9/
+*.launch
 .settings/
 *.sublime-workspace
-
-# VS Code — ignore editor noise; keep shared config via un-ignore below
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 .history/
-*.code-workspace
-.vscode-test/
 
-# Logs & temp
+# Node (monorepo: admin, client, …)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Build & frontend cache
+dist/
+tmp/
+out-tsc/
+bazel-out/
+coverage/
+*.tsbuildinfo
+.angular/
+.sass-cache/
+connect.lock
+libpeerconnection.log
+testem.log
+typings/
+
+# Java / Maven (backend)
+target/
+.mvn/timing.properties
+
+# Backend local data (see backend/.gitignore)
+backend/data/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
 *.log
 logs/
-tmp/
-temp/
-*.tmp
+
+# Python (tooling / scripts)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Misc
 *.swp
 *.swo
+*~
 
-# Tooling / caches (root or any package)
-node_modules/
-coverage/
-.nyc_output/
-.cache/
+# Ignore VS Code settings
+.vscode/
