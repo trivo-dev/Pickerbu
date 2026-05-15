@@ -168,6 +168,23 @@ export class UserListComponent implements OnInit {
       });
   }
 
+  protected userTypeVi(t: UserType): string {
+    switch (t) {
+      case 'ADMIN':
+        return 'Quản trị viên';
+      case 'OWNER':
+        return 'Chủ địa điểm';
+      case 'PLAYER':
+        return 'Người chơi';
+      default:
+        return t;
+    }
+  }
+
+  protected activeLabel(active: boolean): string {
+    return active ? 'Có' : 'Không';
+  }
+
   protected confirmDelete(u: User): void {
     if (u.id === this.auth.user()?.id) {
       this.snack.open('Bạn không thể vô hiệu hóa chính mình tại đây.', 'Đóng', {
