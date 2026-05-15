@@ -81,7 +81,7 @@ private chartsRendered = false;
         });
     }
   }
-
+  //note 
   ngOnDestroy(): void {
     this.destroyCharts();
   }
