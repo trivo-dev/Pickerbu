@@ -1,0 +1,89 @@
+<h2 mat-dialog-title>Giá & tiện ích — {{ data.product.title }}</h2>
+<mat-dialog-content class="dlg">
+  @if (busy()) {
+    <div class="center">
+      <mat-spinner />
+    </div>
+  } @else if (err()) {
+    <p class="err">{{ err() }}</p>
+  } @else {
+    <section>
+      <h3>Khung giá (UTC, VND/giờ)</h3>
+      <div class="table-horizontal-scroll dlg-table-scroll">
+        <table mat-table [dataSource]="prices()" class="mat-elevation-z0">
+          <ng-container matColumnDef="slot">
+            <th mat-header-cell *matHeaderCellDef>Khung giờ</th>
+            <td mat-cell *matCellDef="let r">{{ r.startTime }} – {{ r.endTime }}</td>
+          </ng-container>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Đơn giá</th>
+            <td mat-cell *matCellDef="let r">{{ r.price | number }}</td>
+          </ng-container>
+          <ng-container matColumnDef="kind">
+            <th mat-header-cell *matHeaderCellDef>Loại ngày</th>
+            <td mat-cell *matCellDef="let r">{{ r.weekend ? 'Cuối tuần' : 'Ngày thường' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let r">
+              <button
+                mat-icon-button
+                type="button"
+                color="warn"
+                (click)="deletePrice(r)"
+                aria-label="Xóa khung giá"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayPriceColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayPriceColumns"></tr>
+          <tr class="mat-mdc-row" *matNoDataRow>
+            <td class="mat-mdc-cell" [attr.colspan]="displayPriceColumns.length">Chưa có khung giá.</td>
+          </tr>
+        </table>
+      </div>
+
+      <form [formGroup]="addForm" class="add-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Bắt đầu (HH:mm)</mat-label>
+          <input matInput formControlName="startTime" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Kết thúc (HH:mm)</mat-label>
+          <input matInput formControlName="endTime" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Giá (VND)</mat-label>
+          <input matInput type="number" formControlName="price" />
+        </mat-form-field>
+        <mat-slide-toggle formControlName="weekend">Cuối tuần</mat-slide-toggle>
+        <button mat-flat-button color="primary" type="button" (click)="addPrice()">Thêm khung</button>
+      </form>
+    </section>
+
+    <section class="utils">
+      <h3>Tiện ích</h3>
+      <p class="hint">Chọn các tiện ích gắn với sân; bấm «Lưu tiện ích».</p>
+      <div class="util-grid">
+        @for (u of catalog(); track u.id) {
+          <label class="chk">
+            <input
+              type="checkbox"
+              [checked]="utilityChecked(u.id)"
+              (change)="toggleUtility(u.id)"
+            />
+            {{ u.name }}
+          </label>
+        }
+      </div>
+      <button mat-stroked-button color="primary" type="button" (click)="saveUtilities()">
+        Lưu tiện ích
+      </button>
+    </section>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">Đóng</button>
+</mat-dialog-actions>

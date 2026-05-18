@@ -7,12 +7,15 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import type { ProductImageRef } from '../../core/models/product.model';
 import { AdminProductsService } from '../../core/services/admin-products.service';
-import type { CourtFormDialogData } from './court-form-dialog.types';
+import { resolveAdminMediaUrl } from '../../core/utils/media-url';
+import type { CourtFormDialogData, CourtFormDialogResult } from './court-form-dialog.types';
 
 @Component({
   selector: 'app-court-form-dialog',
@@ -24,18 +27,21 @@ import type { CourtFormDialogData } from './court-form-dialog.types';
     MatSelectModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
   ],
   templateUrl: './court-form-dialog.component.html',
   styleUrl: './court-form-dialog.component.scss',
 })
 export class CourtFormDialogComponent {
   readonly data = inject(MAT_DIALOG_DATA) as CourtFormDialogData;
-  private readonly ref = inject(MatDialogRef<CourtFormDialogComponent, boolean>);
+  private readonly ref = inject(MatDialogRef<CourtFormDialogComponent, CourtFormDialogResult | undefined>);
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(AdminProductsService);
 
   protected readonly busy = signal(false);
+  protected readonly imgBusy = signal(false);
   protected readonly err = signal('');
+  protected readonly images = signal<ProductImageRef[]>([]);
 
   protected form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
@@ -51,6 +57,7 @@ export class CourtFormDialogComponent {
   constructor() {
     if (this.data.mode === 'edit') {
       const p = this.data.product;
+      this.images.set(p.images ?? []);
       this.form.patchValue({
         title: p.title,
         description: p.description ?? '',
@@ -62,6 +69,54 @@ export class CourtFormDialogComponent {
         ownerUserId: p.ownerUserId != null ? String(p.ownerUserId) : '',
       });
     }
+  }
+
+  protected imagePreviewUrl(url: string): string {
+    return resolveAdminMediaUrl(url);
+  }
+
+  protected pickGalleryFile(input: HTMLInputElement): void {
+    input.click();
+  }
+
+  protected onGalleryFile(input: HTMLInputElement): void {
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file || this.data.mode !== 'edit') {
+      return;
+    }
+    this.err.set('');
+    this.imgBusy.set(true);
+    const p = this.data.product;
+    this.api.uploadProductImage(p.id, file).subscribe({
+      next: (img) => {
+        this.imgBusy.set(false);
+        this.images.update((xs) => [...xs, img]);
+      },
+      error: (e: HttpErrorResponse) => {
+        this.imgBusy.set(false);
+        this.err.set(this.readErr(e));
+      },
+    });
+  }
+
+  protected removeImage(img: ProductImageRef): void {
+    if (this.data.mode !== 'edit') {
+      return;
+    }
+    const p = this.data.product;
+    this.err.set('');
+    this.imgBusy.set(true);
+    this.api.deleteProductImage(p.id, img.id).subscribe({
+      next: () => {
+        this.imgBusy.set(false);
+        this.images.update((xs) => xs.filter((i) => i.id !== img.id));
+      },
+      error: (e: HttpErrorResponse) => {
+        this.imgBusy.set(false);
+        this.err.set(this.readErr(e));
+      },
+    });
   }
 
   protected cancel(): void {
@@ -114,9 +169,9 @@ export class CourtFormDialogComponent {
           ownerUserId: ownerId,
         })
         .subscribe({
-          next: () => {
+          next: (created) => {
             this.busy.set(false);
-            this.ref.close(true);
+            this.ref.close({ saved: true, newProductId: created.id });
           },
           error: (e: HttpErrorResponse) => {
             this.busy.set(false);
