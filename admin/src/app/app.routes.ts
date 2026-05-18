@@ -40,5 +40,43 @@ export const routes: Routes = [
       import('./features/courts/court-list.component').then((m) => m.CourtListComponent),
     canActivate: [authGuard, adminGuard],
   },
+  {
+    path: 'schedule',
+    loadComponent: () =>
+      import('./features/schedule/court-schedule.component').then((m) => m.CourtScheduleComponent),
+    canActivate: [authGuard, adminGuard],
+  },
+  {
+    path: 'analytics',
+    loadComponent: () =>
+      import('./features/analytics/analytics.component').then((m) => m.AnalyticsComponent),
+    canActivate: [authGuard, adminGuard],
+  },
+  {
+    path: 'orders/new',
+    loadComponent: () =>
+      import('./features/orders/order-create.component').then((m) => m.OrderCreateComponent),
+    canActivate: [authGuard, adminGuard],
+  },
+  {
+    path: 'orders/:id',
+    loadComponent: () =>
+      import('./features/orders/order-detail.component').then((m) => m.OrderDetailComponent),
+    canActivate: [authGuard, adminGuard],
+  },
+  {
+    path: 'orders',
+    loadComponent: () =>
+      import('./features/orders/order-list.component').then((m) => m.OrderListComponent),
+    canActivate: [authGuard, adminGuard],
+  },
+  {
+    path: 'notifications',
+    loadComponent: () =>
+      import('./features/notifications/notifications-page.component').then(
+        (m) => m.NotificationsPageComponent,
+      ),
+    canActivate: [authGuard, adminGuard],
+  },
   { path: '**', redirectTo: '' },
 ];

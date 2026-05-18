@@ -1,80 +1,164 @@
-<div class="wrap">
-  <mat-card class="block">
-    <mat-card-header>
-      <mat-card-title>Hồ sơ</mat-card-title>
-      <mat-card-subtitle>Cập nhật thông tin tài khoản (bảng users)</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>Tên</mat-label>
-          <input matInput formControlName="firstName" autocomplete="given-name" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>Họ</mat-label>
-          <input matInput formControlName="lastName" autocomplete="family-name" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>Số điện thoại</mat-label>
-          <input matInput formControlName="phone" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>URL ảnh đại diện</mat-label>
-          <input matInput formControlName="avatarUrl" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>Địa chỉ</mat-label>
-          <input matInput formControlName="address" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>Trình độ (level)</mat-label>
-          <input matInput formControlName="level" placeholder="Beginner, Intermediate…" />
-        </mat-form-field>
-        <div class="actions">
-          <button mat-flat-button color="primary" type="submit" [disabled]="profileBusy()">
-            @if (profileBusy()) {
-              <mat-spinner diameter="20" />
-            } @else {
-              Lưu hồ sơ
-            }
-          </button>
-        </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+<div class="profile-page">
+  <header class="page-header-profile">
+    <h1 class="profile-title">Hồ sơ</h1>
+    <p class="profile-subtitle">
+      Cập nhật thông tin hiển thị và thiết lập đăng nhập an toàn.
+    </p>
+  </header>
 
-  <mat-accordion class="block">
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Đổi mật khẩu</mat-panel-title>
-      </mat-expansion-panel-header>
-      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>Mật khẩu hiện tại</mat-label>
-          <input matInput type="password" formControlName="currentPassword" autocomplete="current-password" />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>Mật khẩu mới</mat-label>
-          <input matInput type="password" formControlName="newPassword" autocomplete="new-password" />
-          <mat-hint>Ít nhất 8 ký tự</mat-hint>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="field">
-          <mat-label>Nhập lại mật khẩu mới</mat-label>
-          <input matInput type="password" formControlName="newPassword2" autocomplete="new-password" />
-          @if (passwordForm.touched && passwordForm.hasError("mismatch")) {
-            <mat-error>Không khớp với mật khẩu mới</mat-error>
-          }
-        </mat-form-field>
-        <div class="actions">
-          <button mat-stroked-button color="primary" type="submit" [disabled]="passwordBusy()">
-            @if (passwordBusy()) {
-              <mat-spinner diameter="20" />
+  @if (auth.user(); as u) {
+    <mat-card appearance="outlined" class="profile-hero">
+      <mat-card-content>
+        <div class="hero-layout">
+          <div class="hero-avatar-shell" aria-hidden="true">
+            @if (avatarSrc(); as src) {
+              <img class="hero-avatar-img" [src]="src" alt="" />
             } @else {
-              Đổi mật khẩu
+              <span class="hero-avatar-initials">{{ userInitials() }}</span>
             }
-          </button>
+          </div>
+          <div class="hero-body">
+            <div class="hero-name-row">
+              <h2 class="hero-display-name">{{ u.displayName }}</h2>
+              <span class="role-pill" [class.admin]="u.userType === 'ADMIN'">{{
+                userTypeLabel(u.userType)
+              }}</span>
+            </div>
+            <div class="hero-meta-chips">
+              <span class="meta-chip inactive">
+                <mat-icon inline>alternate_email</mat-icon>
+                {{ u.email }}</span>
+              <span class="meta-chip inactive">
+                <mat-icon inline>badge</mat-icon>
+                {{ u.username }}</span>
+              <span class="meta-chip">
+                <mat-icon inline>calendar_today</mat-icon>
+                Gia nhập {{ u.createdAt | date : "dd/MM/y" }}</span>
+            </div>
+          </div>
         </div>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="profile-columns">
+      <mat-card appearance="outlined" class="profile-panel">
+        <div class="panel-head">
+          <div class="panel-icon-wrap">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div>
+            <h3 class="panel-title">Thông tin cá nhân</h3>
+            <p class="panel-desc">Chúng được lưu trên hồ sơ người dùng của bạn.</p>
+          </div>
+        </div>
+        <mat-card-content>
+          <form [formGroup]="profileForm" class="profile-form" (ngSubmit)="saveProfile()">
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="half">
+                <mat-label>Họ</mat-label>
+                <input matInput formControlName="lastName" autocomplete="family-name" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="half">
+                <mat-label>Tên</mat-label>
+                <input matInput formControlName="firstName" autocomplete="given-name" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Số điện thoại</mat-label>
+                <input matInput formControlName="phone" autocomplete="tel" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>URL ảnh đại diện</mat-label>
+                <input matInput formControlName="avatarUrl" type="url" />
+                <mat-hint>Dán liên kết HTTPS tới ảnh vuông để hiển thị trên avatar.</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Địa chỉ</mat-label>
+                <input matInput formControlName="address" autocomplete="street-address" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Trình độ (level)</mat-label>
+                <input matInput formControlName="level" placeholder="Ví dụ: Beginner" />
+              </mat-form-field>
+            </div>
+            <div class="panel-actions">
+              <button mat-flat-button class="btn-primary-pill" type="submit" [disabled]="profileBusy()">
+                @if (profileBusy()) {
+                  <mat-spinner class="btn-spin" diameter="20" />
+                } @else {
+                  Lưu thay đổi
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined" class="profile-panel profile-panel-security">
+        <div class="panel-head">
+          <div class="panel-icon-wrap muted">
+            <mat-icon>lock</mat-icon>
+          </div>
+          <div>
+            <h3 class="panel-title">Bảo mật</h3>
+            <p class="panel-desc">Đổi mật khẩu định kỳ để bảo vệ tài khoản quản trị.</p>
+          </div>
+        </div>
+        <mat-card-content>
+          <form [formGroup]="passwordForm" class="profile-form" (ngSubmit)="changePassword()">
+            <div class="form-grid single">
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Mật khẩu hiện tại</mat-label>
+                <input
+                  matInput
+                  type="password"
+                  formControlName="currentPassword"
+                  autocomplete="current-password"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Mật khẩu mới</mat-label>
+                <input
+                  matInput
+                  type="password"
+                  formControlName="newPassword"
+                  autocomplete="new-password"
+                />
+                <mat-hint>Ít nhất 8 ký tự.</mat-hint>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full">
+                <mat-label>Nhập lại mật khẩu mới</mat-label>
+                <input
+                  matInput
+                  type="password"
+                  formControlName="newPassword2"
+                  autocomplete="new-password"
+                />
+                @if (passwordForm.touched && passwordForm.hasError('mismatch')) {
+                  <mat-error>Không khớp với mật khẩu mới.</mat-error>
+                }
+              </mat-form-field>
+            </div>
+            <div class="panel-actions">
+              <button
+                mat-stroked-button
+                class="btn-outline-pill"
+                type="submit"
+                [disabled]="passwordBusy()"
+              >
+                @if (passwordBusy()) {
+                  <mat-spinner class="btn-spin" diameter="20" />
+                } @else {
+                  Đổi mật khẩu
+                }
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
 </div>
