@@ -3,7 +3,7 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .filters .f {
@@ -11,30 +11,47 @@
   min-width: 180px;
 }
 
-.bar {
-  margin-bottom: 1rem;
+/* .table-wrap: styles.scss (.admin-crud-page) */
+
+::ng-deep .data-table .mat-mdc-header-cell {
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cg-muted);
 }
 
-.table-wrap {
-  overflow: auto;
+.owner-id {
+  display: inline-block;
+  opacity: 0.65;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-left: 0.35rem;
+  color: var(--cg-muted);
 }
 
-table {
-  width: 100%;
-}
+.pill-status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(0, 110, 40, 0.12);
+  color: var(--cg-positive);
 
-.sub {
-  opacity: 0.75;
-  font-size: 0.85em;
-  margin-left: 0.25rem;
+  &.inactive {
+    background: var(--cg-shell-alt);
+    color: var(--cg-muted);
+  }
 }
 
 .center {
   display: flex;
   justify-content: center;
-  padding: 2rem;
+  padding: 3rem;
 }
 
-mat-card-content .mat-mdc-paginator {
-  border-top: 1px solid var(--mat-sys-outline-variant, #ddd);
+.mat-mdc-paginator {
+  margin-top: 4px;
+  border-top: 1px solid var(--cg-grid-line);
 }

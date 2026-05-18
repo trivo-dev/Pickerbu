@@ -1,0 +1,61 @@
+.dlg {
+  min-width: min(92vw, 560px);
+  max-width: 640px;
+}
+
+.err {
+  color: var(--mat-sys-error, #b00020);
+}
+
+section {
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.dlg-table-scroll {
+  margin-bottom: 1rem;
+}
+
+.add-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.add-row mat-form-field {
+  flex: 1 1 120px;
+  min-width: 100px;
+}
+
+.util-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.chk {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.hint {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
