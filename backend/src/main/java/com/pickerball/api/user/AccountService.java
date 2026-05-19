@@ -62,7 +62,7 @@ public class AccountService {
     public void changePassword(long userId, String currentPassword, String newPassword) {
         User u = findUser(userId);
         if (!passwordEncoder.matches(currentPassword, u.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password is wrong");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password is incorrect");
         }
         u.setPassword(passwordEncoder.encode(newPassword));
     }
