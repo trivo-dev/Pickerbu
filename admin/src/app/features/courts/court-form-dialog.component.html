@@ -46,6 +46,59 @@
       <input matInput formControlName="ownerUserId" type="text" inputmode="numeric" />
       <mat-hint>Gõ ID từ trang “Người dùng”; để trống nếu chưa gán</mat-hint>
     </mat-form-field>
+    @if (data.mode === "create") {
+      <p class="gallery-hint-create">
+        Sau khi <strong>Lưu</strong>, màn hình sẽ mở <strong>Sửa</strong> để bạn thêm ảnh gallery (RustFS).
+      </p>
+    }
+    @if (data.mode === "edit") {
+      <mat-divider />
+      <div class="gallery-block">
+        <div class="gallery-head">
+          <span class="gallery-title">Ảnh địa điểm (RustFS)</span>
+          <input
+            #galleryInput
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            hidden
+            (change)="onGalleryFile(galleryInput)"
+          />
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="pickGalleryFile(galleryInput)"
+            [disabled]="imgBusy() || busy()"
+          >
+            @if (imgBusy()) {
+              <mat-spinner diameter="18" />
+            } @else {
+              Thêm ảnh
+            }
+          </button>
+        </div>
+        <p class="hint-text">
+          Ảnh lưu trên object storage S3-compatible (RustFS). Chỉnh sau khi đã tạo sản phẩm.
+        </p>
+        <div class="thumb-row">
+          @for (im of images(); track im.id) {
+            <div class="thumb">
+              <img [src]="imagePreviewUrl(im.url)" [alt]="'Ảnh ' + im.id" />
+              <button
+                mat-button
+                type="button"
+                color="warn"
+                (click)="removeImage(im)"
+                [disabled]="imgBusy() || busy()"
+              >
+                Xóa
+              </button>
+            </div>
+          } @empty {
+            <span class="muted">Chưa có ảnh.</span>
+          }
+        </div>
+      </div>
+    }
     @if (err()) {
       <p class="err">{{ err() }}</p>
     }

@@ -1,101 +1,115 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Sản phẩm / địa điểm</mat-card-title>
-    <mat-card-subtitle>Bảng `products` — tiêu đề, vị trí, trạng thái, chủ sở hữu</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <form [formGroup]="filterForm" class="filters">
-      <mat-form-field appearance="outline" class="f">
-        <mat-label>Tìm tiêu đề / địa điểm</mat-label>
-        <input matInput formControlName="q" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="f">
-        <mat-label>Trạng thái</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="ALL">Tất cả</mat-option>
-          <mat-option value="active">Hoạt động</mat-option>
-          <mat-option value="inactive">Không hoạt động</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </form>
+<div class="admin-crud-page">
+  <header class="crud-head">
+    <h1 class="crud-title">Địa điểm</h1>
+    <p class="crud-sub">
+      Quản lý sân và gallery — tiêu đề, khu vực, chủ sở hữu và trạng thái hoạt động trên nền tảng.
+    </p>
+  </header>
 
-    <div class="bar">
-      <button mat-flat-button color="primary" type="button" (click)="openCreate()">
-        <mat-icon>add</mat-icon>
-        Thêm
-      </button>
-    </div>
+  <mat-card appearance="outlined" class="crud-panel">
+    <mat-card-content>
+      <form [formGroup]="filterForm" class="filters">
+        <mat-form-field appearance="outline" class="f">
+          <mat-label>Tìm theo tiêu đề hoặc địa điểm</mat-label>
+          <input matInput formControlName="q" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="f">
+          <mat-label>Trạng thái</mat-label>
+          <mat-select formControlName="status">
+            <mat-option value="ALL">Tất cả</mat-option>
+            <mat-option value="active">Hoạt động</mat-option>
+            <mat-option value="inactive">Không hoạt động</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
 
-    @if (busy()) {
-      <div class="center">
-        <mat-spinner />
+      <div class="crud-toolbar-row">
+        <button mat-flat-button color="primary" type="button" class="cg-btn-fill" (click)="openCreate()">
+          <mat-icon>add</mat-icon>
+          Thêm địa điểm
+        </button>
       </div>
-    } @else {
-      <div class="table-wrap">
-        <table mat-table [dataSource]="data()" class="mat-elevation-z0">
-          <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef>Tiêu đề</th>
-            <td mat-cell *matCellDef="let c">{{ c.title }}</td>
-          </ng-container>
-          <ng-container matColumnDef="location">
-            <th mat-header-cell *matHeaderCellDef>Địa điểm</th>
-            <td mat-cell *matCellDef="let c">{{ c.location || "–" }}</td>
-          </ng-container>
-          <ng-container matColumnDef="rate">
-            <th mat-header-cell *matHeaderCellDef>Rate</th>
-            <td mat-cell *matCellDef="let c">{{ c.rate }}</td>
-          </ng-container>
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Trạng thái</th>
-            <td mat-cell *matCellDef="let c">
-              {{ c.status?.toLowerCase() === "inactive" ? "Không HĐ" : "Hoạt động" }}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="owner">
-            <th mat-header-cell *matHeaderCellDef>Chủ (user)</th>
-            <td mat-cell *matCellDef="let c">
-              @if (c.ownerEmail) {
-                {{ c.ownerEmail }}
-                <span class="sub">(#{{ c.ownerUserId }})</span>
-              } @else {
-                –
-              }
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="createdAt">
-            <th mat-header-cell *matHeaderCellDef>Tạo lúc</th>
-            <td mat-cell *matCellDef="let c">
-              {{ c.createdAt | date: "short" }}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Thao tác</th>
-            <td mat-cell *matCellDef="let c">
-              <button mat-icon-button (click)="openEdit(c)" title="Sửa" type="button">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button
-                mat-icon-button
-                (click)="confirmDelete(c)"
-                color="warn"
-                title="Xóa"
-                type="button"
-              >
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
+
+      @if (busy()) {
+        <div class="center">
+          <mat-spinner diameter="40" />
+        </div>
+      } @else {
+        <div class="table-wrap">
+          <table mat-table [dataSource]="data()" class="mat-elevation-z0 data-table">
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef>Tiêu đề</th>
+              <td mat-cell *matCellDef="let c">{{ c.title }}</td>
+            </ng-container>
+            <ng-container matColumnDef="location">
+              <th mat-header-cell *matHeaderCellDef>Vị trí</th>
+              <td mat-cell *matCellDef="let c">{{ c.location || "–" }}</td>
+            </ng-container>
+            <ng-container matColumnDef="rate">
+              <th mat-header-cell *matHeaderCellDef>Điểm</th>
+              <td mat-cell *matCellDef="let c">{{ c.rate }}</td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Trạng thái</th>
+              <td mat-cell *matCellDef="let c">
+                <span class="pill-status" [class.inactive]="c.status?.toLowerCase() === 'inactive'">
+                  {{ c.status?.toLowerCase() === "inactive" ? "Không hoạt động" : "Hoạt động" }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="owner">
+              <th mat-header-cell *matHeaderCellDef>Chủ địa điểm</th>
+              <td mat-cell *matCellDef="let c">
+                @if (c.ownerEmail) {
+                  {{ c.ownerEmail }}
+                  <span class="owner-id">#{{ c.ownerUserId }}</span>
+                } @else {
+                  –
+                }
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef>Tạo lúc</th>
+              <td mat-cell *matCellDef="let c">{{ c.createdAt | date: "short" }}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Thao tác</th>
+              <td mat-cell *matCellDef="let c">
+                <button mat-icon-button (click)="openPricing(c)" title="Giá và tiện ích" type="button">
+                  <mat-icon>payments</mat-icon>
+                </button>
+                <button mat-icon-button (click)="openEdit(c)" title="Sửa" type="button">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                  mat-icon-button
+                  (click)="confirmDelete(c)"
+                  color="warn"
+                  title="Xóa"
+                  type="button"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr class="mat-mdc-row" *matNoDataRow>
+              <td class="mat-mdc-cell" [attr.colspan]="displayedColumns.length">
+                Không có địa điểm phù hợp.
+              </td>
+            </tr>
+          </table>
+        </div>
         <mat-paginator
           [length]="total"
           [pageIndex]="page"
           [pageSize]="size"
           [pageSizeOptions]="[10, 20, 50]"
           (page)="onPage($event)"
+          showFirstLastButtons
         />
-      </div>
-    }
-  </mat-card-content>
-</mat-card>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

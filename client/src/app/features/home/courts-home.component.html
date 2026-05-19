@@ -1,36 +1,315 @@
+<!-- Hero -->
 <header class="hero">
-  <h1>PickleBall</h1>
-  <p class="lede">Địa điểm đang hoạt động (API `products`).</p>
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-mesh"></div>
+    <div class="hero-gradient hero-gradient--pickcourt"></div>
+  </div>
+  <div class="hero-content">
+    <p class="hero-kicker">Đặt sân nhanh · Chơi ngay</p>
+    <h1 class="hero-title">Pickleball. Sân của bạn. Hôm nay.</h1>
+    <p class="hero-lede">Tìm sân trống gần nhất, đặt trong 30 giây.</p>
+    <a routerLink="/explore" class="hero-cta">
+      Tìm sân ngay
+      <svg class="icon-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M5 12h14M13 6l6 6-6 6"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </a>
+  </div>
 </header>
 
+<!-- Quick search (overlaps hero like PickCourt) -->
+<div class="search-float" id="search-panel">
+  <form [formGroup]="filterForm" class="search-shell" (ngSubmit)="refreshSearch()">
+    <div class="search-grid">
+      <label class="search-cell">
+        <span class="search-cell-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </span>
+        <span class="search-cell-fields">
+          <span class="search-label">Khu vực</span>
+          <input
+            type="search"
+            formControlName="q"
+            placeholder="Thành phố, quận…"
+            autocomplete="off"
+            class="search-input"
+          />
+        </span>
+      </label>
+      <div class="search-cell search-cell--hint">
+        <span class="search-cell-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2" />
+            <path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="search-cell-fields">
+          <span class="search-label">Ngày chơi</span>
+          <span class="search-placeholder">Chọn ngày</span>
+        </span>
+      </div>
+      <div class="search-cell search-cell--hint">
+        <span class="search-cell-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+            <path d="M12 7v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="search-cell-fields">
+          <span class="search-label">Thời gian</span>
+          <span class="search-placeholder">Chọn giờ</span>
+        </span>
+      </div>
+    </div>
+    <button type="submit" class="search-submit" id="btn-search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+        <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      Tìm kiếm
+    </button>
+  </form>
+</div>
+
 @if (err()) {
-  <p class="err" role="alert">{{ err() }}</p>
+  <p class="err-banner" role="alert">{{ err() }}</p>
 }
 
 @if (busy() && !items().length) {
-  <p class="loading" aria-live="polite">Đang tải…</p>
+  <p class="loading-state" aria-live="polite">Đang tải…</p>
 } @else {
-  <ul class="list" [class.dim]="busy()">
-    @for (c of items(); track c.id) {
-      <li class="card">
-        <h2 class="name">{{ c.title }}</h2>
-        <div class="meta">
-          @if (c.location) {
-            <span class="addr">{{ c.location }}</span>
-          }
-          @if (c.description) {
-            <span class="desc">{{ c.description }}</span>
-          }
+  <div class="page-main">
+    <section class="section featured" id="featured" aria-label="Sân nổi bật">
+      <div class="featured-head">
+        <div>
+          <h2 class="section-title">Sân nổi bật</h2>
+          <p class="section-sub">Khám phá những sân pickleball chất lượng nhất tại khu vực.</p>
         </div>
-        @if (c.rate != null) {
-          <div class="rate">Đánh giá TB: {{ c.rate }}</div>
+        <a routerLink="/explore" class="link-all">
+          Xem tất cả
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M5 12h14M13 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <ul class="card-grid">
+        @for (c of items(); track c.id) {
+          <li class="feat-card">
+            <a [routerLink]="['/courts', c.id]" class="feat-media">
+              <img [src]="coverUrl(c)" alt="" class="feat-img" (error)="onCoverImgError(c.id)" />
+              <div class="feat-rating">
+                <svg width="14" height="14" viewBox="0 0 24 24" class="star">
+                  <path d="M12 2l2.9 6.9L22 9.8l-5.5 4.7 1.7 7L12 17.8 5.8 21.5l1.7-7L2 9.8l7.1-.9L12 2z" fill="currentColor" />
+                </svg>
+                <span>{{ rateLabel(c.rate) }}</span>
+              </div>
+            </a>
+            <div class="feat-body">
+              <h3 class="feat-name">{{ c.title }}</h3>
+              @if (c.location) {
+                <div class="feat-loc">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <circle cx="12" cy="10" r="2" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  {{ c.location }}
+                </div>
+              }
+              <div class="feat-foot">
+                <div>
+                  <span class="price-cap">Giá từ</span>
+                  @if (minPrice(c); as v) {
+                    <span class="price-val price-val--sm"
+                      >{{ v | number: '1.0-0' }}đ<span class="price-suffix">/giờ</span></span
+                    >
+                  } @else {
+                    <span class="price-val price-val--sm price-val--soft">Chi tiết</span>
+                  }
+                </div>
+                <a [routerLink]="['/courts', c.id]" class="btn-soft">Đặt ngay</a>
+              </div>
+            </div>
+          </li>
+        } @empty {
+          <li class="empty-grid">Chưa có địa điểm hoạt động (hoặc chưa có dữ liệu).</li>
         }
-        <div class="sub">Tạo {{ c.createdAt | date: "short" }}</div>
-      </li>
-    } @empty {
-      <li class="empty">Chưa có địa điểm hoạt động (hoặc chưa có dữ liệu).</li>
-    }
-  </ul>
+      </ul>
+    </section>
+
+    <section class="section stats-strip" id="trust" aria-label="Con số nổi bật">
+      <ul class="stats-grid">
+        <li class="stat-card">
+          <span class="stat-value">500+</span>
+          <span class="stat-label">Giờ sân được đặt qua PickCourt</span>
+        </li>
+        <li class="stat-card">
+          <span class="stat-value">30 giây</span>
+          <span class="stat-label">Đủ để khởi tạo và chọn khung giờ phù hợp</span>
+        </li>
+        <li class="stat-card">
+          <span class="stat-value">24/7</span>
+          <span class="stat-label">Săn chỗ trống mọi thời điểm trong ngày</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section why" id="why" aria-label="Vì sao chọn PickCourt">
+      <div class="why-inner">
+        <h2 class="why-title">Tại sao PickCourt</h2>
+        <div class="why-rule"></div>
+        <div class="why-grid">
+          <article class="why-item">
+            <div class="why-icon-wrap">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <h3 class="why-item-title">Đặt trong 30 giây</h3>
+            <p class="why-item-text">Quy trình tối giản, thanh toán tức thì. Không đợi chờ, không phiền phức.</p>
+          </article>
+          <article class="why-item">
+            <div class="why-icon-wrap">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M17 18a5 5 0 00-3-1 5 5 0 00-6 0 5 5 0 00-3 1M12 13a4 4 0 100-8 4 4 0 000 8z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <h3 class="why-item-title">AI ghép đối thủ</h3>
+            <p class="why-item-text">
+              Tìm bạn chơi phù hợp với trình độ và thời gian của bạn bằng thuật toán thông minh.
+            </p>
+          </article>
+          <article class="why-item">
+            <div class="why-icon-wrap">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M18 8a6 6 0 10-12 0c0 7-6 10-6 10h18s-6-3-6-10"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path d="M13.7 16a6 6 0 01-3.4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </div>
+            <h3 class="why-item-title">Nhắc lịch thông minh</h3>
+            <p class="why-item-text">
+              Tự động gửi thông báo qua app và SMS trước giờ thi đấu — bạn không bỏ lỡ trận đấu.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section how" id="how" aria-label="Cách đặt sân">
+      <div class="how-head">
+        <h2 class="section-title">Đặt sân chỉ trong vài phút</h2>
+        <p class="section-sub">
+          Luồng rõ ràng từ tìm địa điểm tới giữ chỗ và theo dõi đơn — không cần nhắn Zalo đi đi lại.
+        </p>
+      </div>
+      <ol class="how-steps">
+        <li class="how-step">
+          <span class="how-num" aria-hidden="true">1</span>
+          <h3 class="how-title">Tìm địa điểm</h3>
+          <p class="how-text">
+            Gõ khu vực phía trên hoặc mở
+            <a routerLink="/explore" class="how-link">trang khám phá</a>
+            để so sánh ảnh, đánh giá và mức giá giờ cao/thấp.
+          </p>
+        </li>
+        <li class="how-step">
+          <span class="how-num" aria-hidden="true">2</span>
+          <h3 class="how-title">Chọn khung giờ</h3>
+          <p class="how-text">
+            Vào từng sân để đọc bảng giá theo khung và chọn ô thời gian còn trống. Bạn có thể giữ chỗ tạm trước khi hoàn tất.
+          </p>
+        </li>
+        <li class="how-step">
+          <span class="how-num" aria-hidden="true">3</span>
+          <h3 class="how-title">Xác nhận &amp; theo dõi</h3>
+          <p class="how-text">
+            Đặt lịch nằm trong
+            <a routerLink="/account/orders" class="how-link">Đặt lịch · đơn của tôi</a>
+            (cần đăng nhập). Bạn và chủ địa điểm xử lý trạng thái ngay trong ứng dụng.
+          </p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section faq" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading" class="section-title">Câu hỏi thường gặp</h2>
+      <p class="section-sub faq-intro">Ba điều khách hay hỏi trước khi chốt chỗ.</p>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Tôi có cần tài khoản để xem và đặt sân không?</summary>
+          <p>
+            Bạn xem danh sách và chi tiết công khai. Để giữ chỗ, tạo đơn và xem lại lịch, hãy
+            <a routerLink="/register" class="how-link">đăng ký</a>
+            hoặc
+            <a routerLink="/login" class="how-link">đăng nhập</a>.
+          </p>
+        </details>
+        <details class="faq-item">
+          <summary>PickCourt có thu phí dịch vụ từ người đặt không?</summary>
+          <p>Nền tảng thuần ghép khách và sân — mức giá và thuế thể hiện theo chủ địa điểm. Chi tiết tổng chi phí được ghi trong mỗi đơn.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Hủy chỗ và hoàn tiền xử lý như thế nào?</summary>
+          <p>
+            Chính sách cụ thể do từng sân đăng — vui lòng đọc mô tả trên trang chi tiết. Hỗ trợ và khiếu nại:
+            liên kết góc trang footer.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <section class="cta-band" aria-label="Kêu gọi hành động">
+      <div class="cta-inner">
+        <div class="cta-copy">
+          <h2 class="cta-heading">Pickleball. Sân trống. Hôm nay.</h2>
+          <p class="cta-lede">Đừng để chỗ kín trước khi kịp mở lịch — lướt danh mục và chốt ô phù hợp trong vài nhịp.</p>
+        </div>
+        <div class="cta-actions">
+          <a routerLink="/explore" class="cta-primary">Đi đến khám phá</a>
+          <a routerLink="/register" class="cta-secondary">Đăng ký miễn phí</a>
+        </div>
+      </div>
+    </section>
+  </div>
 }
 
 @if (totalPages > 1) {
@@ -40,3 +319,18 @@
     <button type="button" (click)="goNext()" [disabled]="busy() || page >= totalPages - 1">Sau →</button>
   </nav>
 }
+
+<footer class="site-footer site-footer--light">
+  <div class="site-footer-inner">
+    <div>
+      <a routerLink="/" class="footer-brand">PickCourt</a>
+      <p class="footer-copy">© 2026 PickCourt. Đặt sân pickleball nhanh chóng.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#">Chính sách</a>
+      <a href="#">Điều khoản</a>
+      <a href="#">Liên hệ</a>
+      <a href="#">Hỗ trợ</a>
+    </div>
+  </div>
+</footer>
