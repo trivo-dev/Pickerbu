@@ -1,76 +1,328 @@
-/* Google / Material hệ màu ứng dụng (trùng tông theme Material Azure Blue) */
+/*
+ * Design tokens synced with Figma Admin System Dashboard frame (Court Gallery palette).
+ */
 :root {
-  --g-primary: #1a73e8;
-  --g-primary-darker: #1967d2;
-  --g-on-surface: #202124;
-  --g-on-surface-variant: #5f6368;
-  --g-surface: #fff;
-  --g-surface-container: #f8f9fa;
-  --g-surface-dim: #f1f3f4;
-  --g-outline: #dadce0;
-  --g-link: #1a73e8;
-  --g-nav-active-bg: #e8f0fe;
-  --g-shadow-1: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  /* UI sans — Vietnamese-friendly; tighter Inter was crowding diacritics */
+  --font-sans:
+    "Be Vietnam Pro",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+
+  --cg-shell: #fcf8fb;
+  --cg-shell-alt: #f6f3f5;
+  --cg-white: #ffffff;
+  --cg-navy: #0059b5;
+  --cg-navy-strong: #0071e3;
+  --cg-brand-text: #2563eb;
+  --cg-heading: #1b1b1d;
+  --cg-body: #414753;
+  --cg-muted: #64748b;
+  --cg-muted-2: #717785;
+  --cg-chart-bar: #d7e2ff;
+  --cg-grid-line: #eae7ea;
+  --cg-positive: #006e28;
+  --cg-positive-soft: rgba(114, 254, 136, 0.3);
+  --cg-danger: #ba1a1a;
+  --cg-danger-soft-bg: #ffdad6;
+  --cg-danger-soft-text: #93000a;
+  --cg-deco-circle: rgba(215, 226, 255, 0.5);
+
+  /* Shared with legacy var names */
+  --g-primary: #2563eb;
+  --g-primary-darker: #0059b5;
+  --g-on-surface: #1b1b1d;
+  --g-on-surface-variant: #64748b;
+  --g-surface: #ffffff;
+  --g-surface-container: #fcf8fb;
+  --g-surface-dim: #f6f3f5;
+  --g-outline: #eae7ea;
+  --g-link: #0059b5;
+  --g-nav-active-bg: #ffffff;
+  --g-shadow-1:
+    0 1px 1px rgba(0, 0, 0, 0.05),
+    0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+/*
+ * Material 3 prebuilt theme (azure-blue) hard-codes Roboto on --mat-sys-* tokens.
+ * Redefine typography tokens so MDC form fields, buttons, menus, etc. use --font-sans.
+ */
+html {
+  --mat-sys-body-large-font: var(--font-sans);
+  --mat-sys-body-medium-font: var(--font-sans);
+  --mat-sys-body-small-font: var(--font-sans);
+  --mat-sys-display-large-font: var(--font-sans);
+  --mat-sys-display-medium-font: var(--font-sans);
+  --mat-sys-display-small-font: var(--font-sans);
+  --mat-sys-headline-large-font: var(--font-sans);
+  --mat-sys-headline-medium-font: var(--font-sans);
+  --mat-sys-headline-small-font: var(--font-sans);
+  --mat-sys-label-large-font: var(--font-sans);
+  --mat-sys-label-medium-font: var(--font-sans);
+  --mat-sys-label-small-font: var(--font-sans);
+  --mat-sys-title-large-font: var(--font-sans);
+  --mat-sys-title-medium-font: var(--font-sans);
+  --mat-sys-title-small-font: var(--font-sans);
+
+  --mat-sys-body-large: 400 1rem / 1.5rem var(--font-sans);
+  --mat-sys-body-medium: 400 0.875rem / 1.25rem var(--font-sans);
+  --mat-sys-body-small: 400 0.75rem / 1rem var(--font-sans);
+  --mat-sys-display-large: 400 3.562rem / 4rem var(--font-sans);
+  --mat-sys-display-medium: 400 2.812rem / 3.25rem var(--font-sans);
+  --mat-sys-display-small: 400 2.25rem / 2.75rem var(--font-sans);
+  --mat-sys-headline-large: 400 2rem / 2.5rem var(--font-sans);
+  --mat-sys-headline-medium: 400 1.75rem / 2.25rem var(--font-sans);
+  --mat-sys-headline-small: 400 1.5rem / 2rem var(--font-sans);
+  --mat-sys-label-large: 500 0.875rem / 1.25rem var(--font-sans);
+  --mat-sys-label-medium: 500 0.75rem / 1rem var(--font-sans);
+  --mat-sys-label-small: 500 0.688rem / 1rem var(--font-sans);
+  --mat-sys-title-large: 400 1.375rem / 1.75rem var(--font-sans);
+  --mat-sys-title-medium: 500 1rem / 1.5rem var(--font-sans);
+  --mat-sys-title-small: 500 0.875rem / 1.25rem var(--font-sans);
 }
 
 html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   color: var(--g-on-surface);
   background: var(--g-surface-container);
   font-size: 14px;
-  line-height: 1.5;
-  letter-spacing: 0.2px;
+  line-height: 1.52;
+  letter-spacing: 0.01em;
+}
+
+body.mat-typography {
+  font-family: var(--font-sans);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+app-root {
+  font-family: var(--font-sans);
+}
+
+.cdk-overlay-container {
+  font-family: var(--font-sans);
+}
+
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-flat-button,
+.mat-mdc-icon-button,
+.mat-mdc-form-field,
+.mat-mdc-list-item,
+.mat-mdc-card-title,
+.mat-mdc-card-subtitle,
+.mat-mdc-cell,
+.mat-mdc-header-cell,
+.mat-mdc-paginator-container,
+.mat-mdc-dialog-title,
+.mat-mdc-snack-bar-container {
+  font-family: var(--font-sans) !important;
 }
 
 a {
   color: var(--g-link);
   text-decoration: none;
 }
+
 a:hover {
   text-decoration: underline;
 }
 
-/* Thẻ nội dung: bóng kiểu elevation Material / Google */
 .mat-mdc-card,
 mat-card {
-  --mdc-elevated-card-container-shape: 8px;
-  border-radius: 8px;
+  --mdc-elevated-card-container-shape: 0px;
+  border-radius: 0 !important;
   box-shadow: var(--g-shadow-1) !important;
-  border: 1px solid var(--g-outline) !important;
+  border: none !important;
   background: var(--g-surface) !important;
 }
 
 mat-card-header .mat-mdc-card-title,
 mat-card-title,
 .mat-mdc-card-header-text .mat-mdc-card-title {
-  color: var(--g-on-surface) !important;
-  font-size: 1.25rem;
-  font-weight: 400;
+  color: var(--cg-heading) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 1.125rem;
+  font-weight: 600;
   letter-spacing: 0;
 }
 
 mat-card-header .mat-mdc-card-subtitle,
 mat-card-subtitle,
 .mat-mdc-card-header-text .mat-mdc-card-subtitle {
-  color: var(--g-on-surface-variant) !important;
+  color: var(--cg-body) !important;
   font-size: 0.875rem;
-  line-height: 1.25rem;
-  margin-top: 0.25rem;
+  line-height: 1.45rem;
+  margin-top: 0.2rem;
 }
 
-/* Bảng: header rõ, viền nhẹ */
 .mat-mdc-table {
   background: var(--g-surface);
 }
 
-/* Paginator: nền trắng, viền trên */
 .mat-mdc-paginator {
   background: var(--g-surface) !important;
   border-top: 1px solid var(--g-outline);
+}
+
+/*
+ * Sidebar: Angular MDC list sets font on internal label nodes, ignoring body/mat-typography.
+ */
+.sidenav {
+  font-family: var(--font-sans);
+}
+
+.sidenav mat-nav-list .mat-mdc-list-item,
+.sidenav mat-nav-list a.mat-mdc-list-item,
+.sidenav .mat-mdc-list-item .mdc-list-item__primary-text,
+.sidenav .mat-mdc-list-item .mat-mdc-list-item-title,
+.sidenav .mdc-list-item__content .mdc-list-item__primary-text {
+  font-family: var(--font-sans) !important;
+}
+
+.sidenav .nav-section-label {
+  font-family: var(--font-sans) !important;
+}
+
+/* ── Shared admin list / CRUD pages (Court Gallery) ───────────────────── */
+.admin-crud-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 48px 48px 56px;
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+
+  .crud-head {
+    margin-bottom: 26px;
+
+    .crud-title {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: clamp(1.5rem, 2.6vw, 2rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--cg-heading);
+    }
+
+    .crud-sub {
+      margin: 10px 0 0;
+      max-width: 62ch;
+      font-size: 1rem;
+      line-height: 1.55;
+      font-weight: 400;
+      color: var(--cg-body);
+    }
+  }
+
+  .crud-panel {
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  /** Bọc bảng: khi cột / nội dung rộng hơn viewport thì cuộn ngang. */
+  .table-wrap {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    border-radius: 8px;
+    border: 1px solid var(--cg-grid-line);
+    background: var(--g-surface);
+  }
+
+  .table-wrap table.data-table.mat-mdc-table {
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
+    background: transparent;
+  }
+
+  .table-wrap table.data-table.mat-mdc-table .mat-mdc-cell,
+  .table-wrap table.data-table.mat-mdc-table .mat-mdc-header-cell {
+    box-sizing: border-box;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .crud-panel mat-card-content {
+    padding: 22px 24px 28px !important;
+  }
+
+  .crud-toolbar-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 14px;
+
+    .grow {
+      flex: 1;
+      min-width: 120px;
+    }
+  }
+
+  .cg-btn-fill.mat-mdc-unelevated-button,
+  button.cg-btn-fill.mat-mdc-unelevated-button {
+    border-radius: 999px !important;
+    padding: 0 20px !important;
+    min-height: 40px !important;
+    font-weight: 600 !important;
+    background-color: var(--cg-navy) !important;
+    color: #fff !important;
+  }
+
+  .cg-btn-fill mat-icon {
+    margin-right: 6px;
+    vertical-align: middle;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 959.98px) {
+  .admin-crud-page {
+    padding: 28px 20px 40px;
+  }
+}
+
+/* Bảng Material ngoài admin-crud-page (ví dụ dialog giá): cuộn ngang khi rộng. */
+.table-horizontal-scroll {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.table-horizontal-scroll > table.mat-mdc-table {
+  width: max-content;
+  min-width: 100%;
+  table-layout: auto;
 }
