@@ -1,30 +1,210 @@
 <div class="page">
-  <div class="panel panel-main">
-    <h2 class="panel-title">Tổng quan</h2>
-    <p class="greeting">Xin chào, <strong>{{ auth.user()?.displayName }}</strong></p>
-    <div class="meta-grid">
-      <div class="meta-item">
-        <span class="label">Email</span>
-        <span class="value">{{ auth.user()?.email }}</span>
-      </div>
-      <div class="meta-item">
-        <span class="label">Username</span>
-        <span class="value">{{ auth.user()?.username }}</span>
-      </div>
-      <div class="meta-item">
-        <span class="label">Loại (user_type)</span>
-        <span class="value">{{ auth.user()?.userType }}</span>
-      </div>
-      <div class="meta-item">
-        <span class="label">Trình độ (level)</span>
-        <span class="value">{{ auth.user()?.level || "–" }}</span>
-      </div>
-    </div>
-  </div>
   @if (auth.user()?.userType === "ADMIN") {
-    <div class="panel panel-hint">
-      <h3 class="panel-subtitle">Truy cập nhanh</h3>
-      <p class="hint-text">Dùng menu bên trái: người dùng, sản phẩm / địa điểm (`products`).</p>
+    <section class="admin-dash" aria-label="Tổng quan hệ thống">
+      @if (statsLoading()) {
+        <div class="loading-row">
+          <mat-spinner diameter="40" />
+          <span>Đang tải số liệu…</span>
+        </div>
+      } @else if (statsError()) {
+        <div class="panel panel-error">
+          <p>{{ statsError() }}</p>
+        </div>
+      } @else {
+        @if (stats(); as st) {
+          @let trendProd = trendStr(st.productsCreatedDaily);
+          @let trendUsers = trendStr(st.usersRegisteredDaily);
+        <header class="page-header-dash">
+          <h1 class="dash-title">Tổng quan hệ thống</h1>
+          <p class="dash-subtitle">Hiệu năng nền tảng và số liệu vận hành.</p>
+        </header>
+
+        <div class="kpi-bento">
+          <article class="kpi-card">
+            <div class="kpi-deco" aria-hidden="true"></div>
+            <div class="kpi-head">
+              <div class="kpi-icon-ring">
+                <mat-icon>storefront</mat-icon>
+              </div>
+              @if (trendProd) {
+                <div class="kpi-trend" aria-hidden="true">
+                  <mat-icon>trending_up</mat-icon>
+                  {{ trendProd }}
+                </div>
+              }
+            </div>
+            <p class="kpi-label">Tổng địa điểm</p>
+            <p class="kpi-value">{{ fmtNumber(st.summary.totalProducts) }}</p>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-deco" aria-hidden="true"></div>
+            <div class="kpi-head">
+              <div class="kpi-icon-ring">
+                <mat-icon>group</mat-icon>
+              </div>
+              @if (trendUsers) {
+                <div class="kpi-trend" aria-hidden="true">
+                  <mat-icon>trending_up</mat-icon>
+                  {{ trendUsers }}
+                </div>
+              }
+            </div>
+            <p class="kpi-label">Người dùng hoạt động</p>
+            <p class="kpi-value">{{ fmtAbbrev(st.summary.activeUsers) }}</p>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-deco" aria-hidden="true"></div>
+            <div class="kpi-head">
+              <div class="kpi-icon-ring">
+                <mat-icon>today</mat-icon>
+              </div>
+              @if (trendUsers) {
+                <div class="kpi-trend" aria-hidden="true">
+                  <mat-icon>trending_up</mat-icon>
+                  {{ trendUsers }}
+                </div>
+              }
+            </div>
+            <p class="kpi-label">Đăng ký (14 ngày)</p>
+            <p class="kpi-value">{{ fmtAbbrev(sumDaily(st.usersRegisteredDaily, 14)) }}</p>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-deco" aria-hidden="true"></div>
+            <div class="kpi-head">
+              <div class="kpi-icon-ring">
+                <mat-icon>collections</mat-icon>
+              </div>
+              @if (trendProd) {
+                <div class="kpi-trend" aria-hidden="true">
+                  <mat-icon>trending_up</mat-icon>
+                  {{ trendProd }}
+                </div>
+              }
+            </div>
+            <p class="kpi-label">Ảnh thư viện</p>
+            <p class="kpi-value">{{ fmtNumber(st.summary.totalProductImages) }}</p>
+          </article>
+        </div>
+
+        <div class="dash-grid-split">
+          <mat-card appearance="outlined" class="chart-panel">
+            <div class="chart-panel-head">
+              <div class="chart-titles">
+                <h3 class="chart-heading">Hoạt động đăng ký &amp; địa điểm</h3>
+                <p class="chart-subheading">Khối lượng 14 ngày — so sánh nửa đầu / nửa sau chuỗi.</p>
+              </div>
+              <button type="button" mat-button class="link-action" routerLink="/users">
+                Xem báo cáo
+              </button>
+            </div>
+            <mat-card-content>
+              <div class="chart-canvas-inner">
+                <canvas #trendCanvas id="dash-chart-trends"></canvas>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <aside class="aside-stack" aria-label="Trạng thái & thông báo">
+            <mat-card appearance="outlined" class="status-panel">
+              <mat-card-header>
+                <mat-card-title>Trạng thái sản phẩm</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="status-row">
+                  <div class="status-label-row">
+                    <span class="status-dot active"></span>
+                    <span>Hoạt động</span>
+                    <span class="status-count">{{ fmtNumber(st.summary.activeProducts) }}</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill active-fill" [style.width.%]="activeProductPct(st)"></div>
+                  </div>
+                </div>
+                <div class="status-row status-row-gap">
+                  <div class="status-label-row">
+                    <span class="status-dot muted-dot"></span>
+                    <span>Không hoạt động</span>
+                    <span class="status-count">{{ fmtNumber(st.summary.inactiveProducts) }}</span>
+                  </div>
+                  <div class="progress-track">
+                    <div
+                      class="progress-fill inactive-fill"
+                      [style.width.%]="inactiveProductPct(st)"
+                    ></div>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card appearance="outlined" class="alert-panel">
+              <mat-card-header class="alert-head">
+                <mat-card-title>Thông báo hệ thống</mat-card-title>
+                <a routerLink="/notifications" class="alert-badge">{{ fmtNumber(unreadNotifCount()) }} mới</a>
+              </mat-card-header>
+              <mat-card-content>
+                <div class="alert-item">
+                  <mat-icon class="alert-ico info">info</mat-icon>
+                  <div>
+                    <p class="alert-title">Nguồn dữ liệu</p>
+                    <p class="alert-detail">
+                      Số “mới” là thông báo chưa đọc của tài khoản admin —
+                      <a routerLink="/notifications">mở hộp thư</a>.
+                    </p>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </aside>
+        </div>
+
+        <div class="dash-full-row">
+          <mat-card appearance="outlined" class="chart-panel chart-panel-wide">
+            <div class="chart-panel-head">
+              <div class="chart-titles">
+                <h3 class="chart-heading">Tăng trưởng đặt chỗ</h3>
+                <p class="chart-subheading">Số đơn tạo theo tháng — 6 tháng gần nhất.</p>
+              </div>
+              <button type="button" mat-button class="link-action" routerLink="/analytics">
+                Phân tích chi tiết
+              </button>
+            </div>
+            <mat-card-content>
+              <div class="chart-canvas-inner chart-canvas-booking">
+              <canvas #ordersCanvas id="dash-chart-orders"></canvas>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        }
+      }
+    </section>
+  } @else {
+    <div class="panel panel-main">
+      <h2 class="panel-title">Tổng quan</h2>
+      <p class="greeting">
+        Xin chào, <strong>{{ auth.user()?.displayName }}</strong>
+      </p>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="label">Email</span>
+          <span class="value">{{ auth.user()?.email }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Username</span>
+          <span class="value">{{ auth.user()?.username }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Loại (user_type)</span>
+          <span class="value">{{ auth.user()?.userType }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="label">Trình độ (level)</span>
+          <span class="value">{{ auth.user()?.level || "–" }}</span>
+        </div>
+      </div>
     </div>
   }
 </div>

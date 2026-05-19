@@ -1,0 +1,88 @@
+<div class="page">
+  <header class="head">
+    <div>
+      <h1>Phân tích</h1>
+      <p class="sub">Đọc song song đăng ký, địa điểm, đặt chỗ và phân bổ loại người dùng.</p>
+    </div>
+
+    <a mat-button class="dash-link" routerLink="/">
+      <mat-icon>arrow_back</mat-icon>
+      Tổng quan
+    </a>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-row">
+      <mat-spinner diameter="40" />
+      <span>Đang tải số liệu…</span>
+    </div>
+  } @else if (err()) {
+    <mat-card appearance="outlined" class="err-panel">
+      <mat-card-content>{{ err() }}</mat-card-content>
+    </mat-card>
+  } @else {
+    @if (stats(); as st) {
+      @let regsTrend = trendPct(st.usersRegisteredDaily);
+
+      <section class="kpi-strip" aria-label="Tóm tắt nhanh">
+        <article class="kpi-mini">
+          <span class="kpi-l">Đăng ký (chuỗi)</span>
+          <span class="kpi-v">{{ fmtNumber(sumDailyCount(st.usersRegisteredDaily)) }}</span>
+
+          @if (regsTrend !== null) {
+            <span class="kpi-chip">{{ regsTrend }}</span>
+          }
+        </article>
+
+        <article class="kpi-mini">
+          <span class="kpi-l">Đặt chỗ (6 tháng)</span>
+          <span class="kpi-v">
+            {{ fmtNumber(monthlyBookings(st.ordersByMonth)) }}
+          </span>
+        </article>
+
+        <article class="kpi-mini">
+          <span class="kpi-l">Địa điểm hoạt động</span>
+          <span class="kpi-v">{{ fmtNumber(st.summary.activeProducts) }}</span>
+        </article>
+      </section>
+
+      <div class="grid-charts">
+        <mat-card appearance="outlined" class="chart-card">
+          <div class="chart-head">
+            <h3>Hoạt động đăng ký &amp; địa điểm</h3>
+            <p>Khối lượng theo ngày — cùng dữ liệu với tổng quan.</p>
+          </div>
+
+          <mat-card-content class="canvas-wrap tall">
+            <canvas #trendCanvas id="analytics-chart-trends"></canvas>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card appearance="outlined" class="chart-card">
+          <div class="chart-head">
+            <h3>Đặt chỗ theo tháng</h3>
+            <p>Gộp đơn tạo trong 6 tháng gần nhất.</p>
+          </div>
+
+          <mat-card-content class="canvas-wrap medium">
+            <canvas #ordersCanvas id="analytics-chart-orders"></canvas>
+          </mat-card-content>
+        </mat-card>
+
+        @if (st.usersByUserType.length > 0) {
+          <mat-card appearance="outlined" class="chart-card wide">
+            <div class="chart-head">
+              <h3>Người dùng theo loại tài khoản</h3>
+              <p>Phân bổ đếm theo user_type.</p>
+            </div>
+
+            <mat-card-content class="canvas-wrap types">
+              <canvas #userTypesCanvas id="analytics-chart-user-types"></canvas>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  }
+</div>
