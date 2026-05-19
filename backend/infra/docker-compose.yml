@@ -1,0 +1,28 @@
+# Chỉ hạ tầng PostgreSQL — không build / không chạy ứng dụng.
+#
+# Từ thư mục backend:     docker compose -f infra/docker-compose.yml up -d
+# Từ thư mục gốc repo:    docker compose -f backend/infra/docker-compose.yml up -d
+# Dừng:  ... down  (xóa volume: thêm -v)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pickerball-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pickerball
+      POSTGRES_PASSWORD: pickerball
+      POSTGRES_DB: pickerball
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U pickerball -d pickerball']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+    name: pickerball_pgdata

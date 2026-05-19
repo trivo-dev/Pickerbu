@@ -1,0 +1,12 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  min-width: min(100%, 400px);
+  padding-top: 0.5rem;
+}
+
+.err {
+  color: var(--mat-sys-error, #b00020);
+  font-size: 0.875rem;
+  margin: 0 0 0.5rem;
+}

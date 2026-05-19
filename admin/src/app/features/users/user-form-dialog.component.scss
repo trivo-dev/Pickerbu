@@ -1,0 +1,23 @@
+.field {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+form {
+  min-width: 300px;
+  max-width: 480px;
+  padding: 0.25rem 0;
+}
+
+.error {
+  color: var(--mat-sys-error);
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+
+.sp {
+  display: inline-block;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}

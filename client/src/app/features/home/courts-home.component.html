@@ -1,0 +1,42 @@
+<header class="hero">
+  <h1>PickleBall</h1>
+  <p class="lede">Địa điểm đang hoạt động (API `products`).</p>
+</header>
+
+@if (err()) {
+  <p class="err" role="alert">{{ err() }}</p>
+}
+
+@if (busy() && !items().length) {
+  <p class="loading" aria-live="polite">Đang tải…</p>
+} @else {
+  <ul class="list" [class.dim]="busy()">
+    @for (c of items(); track c.id) {
+      <li class="card">
+        <h2 class="name">{{ c.title }}</h2>
+        <div class="meta">
+          @if (c.location) {
+            <span class="addr">{{ c.location }}</span>
+          }
+          @if (c.description) {
+            <span class="desc">{{ c.description }}</span>
+          }
+        </div>
+        @if (c.rate != null) {
+          <div class="rate">Đánh giá TB: {{ c.rate }}</div>
+        }
+        <div class="sub">Tạo {{ c.createdAt | date: "short" }}</div>
+      </li>
+    } @empty {
+      <li class="empty">Chưa có địa điểm hoạt động (hoặc chưa có dữ liệu).</li>
+    }
+  </ul>
+}
+
+@if (totalPages > 1) {
+  <nav class="pager" aria-label="Phân trang">
+    <button type="button" (click)="goPrev()" [disabled]="busy() || page === 0">← Trước</button>
+    <span class="page-info">Trang {{ page + 1 }} / {{ totalPages }}</span>
+    <button type="button" (click)="goNext()" [disabled]="busy() || page >= totalPages - 1">Sau →</button>
+  </nav>
+}

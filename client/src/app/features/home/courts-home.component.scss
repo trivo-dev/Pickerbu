@@ -1,0 +1,164 @@
+.hero {
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 3vw, 1.75rem);
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.lede {
+  color: #444;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.err {
+  color: #b00020;
+  background: #ffebee;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin: 0 0 1rem;
+}
+
+.loading {
+  padding: 1.5rem 0;
+  color: #666;
+}
+
+.list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.list.dim {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  background: #fafafa;
+}
+
+.name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.addr {
+  color: #555;
+  line-height: 1.4;
+}
+
+.phone {
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.sub {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.empty {
+  padding: 1rem 0;
+  color: #666;
+}
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pager button {
+  padding: 0.4rem 0.9rem;
+  font: inherit;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.pager button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+:host {
+  display: block;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+:host * {
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  :host {
+    color: #e8e8e8;
+  }
+
+  .lede {
+    color: #b0b0b0;
+  }
+
+  .card {
+    background: #1e1e1e;
+    border-color: #3a3a3a;
+  }
+
+  .meta {
+    color: #d0d0d0;
+  }
+
+  .addr,
+  .sub {
+    color: #a8a8a8;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .pager {
+    border-color: #3a3a3a;
+  }
+
+  .pager button {
+    background: #2a2a2a;
+    border-color: #555;
+    color: #e8e8e8;
+  }
+}

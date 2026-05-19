@@ -1,0 +1,50 @@
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  background: var(--g-surface-container, #f8f9fa);
+}
+
+.card {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 8px;
+}
+
+.field {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.actions button mat-spinner {
+  display: inline-block;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.secondary {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--g-on-surface-variant, #5f6368);
+}
+
+.secondary a {
+  color: var(--g-link, #1a73e8);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.secondary a:hover {
+  text-decoration: underline;
+}
