@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
 import { AccountService } from '../../core/services/account.service';
@@ -31,6 +32,7 @@ import type { UserType, User } from '../../core/models/user.model';
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
     MatSnackBarModule,
   ],
   templateUrl: './account.component.html',
@@ -51,15 +53,16 @@ export class AccountComponent implements OnInit {
   protected readonly profileBusy = signal(false);
   protected readonly passwordBusy = signal(false);
   private static readonly phonePattern = /^(|[0-9+\-\s()]+)$/;
+  protected readonly levelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Pro'] as const;
 
   protected profileForm = this.fb.nonNullable.group({
-  firstName: ['', [Validators.maxLength(100)]],
-  lastName: ['', [Validators.maxLength(100)]],
-  phone: ['', [Validators.maxLength(32), Validators.pattern(AccountComponent.phonePattern)]],
-  avatarUrl: ['', [Validators.maxLength(255)]],
-  address: ['', [Validators.maxLength(255)]],
-  level: ['', [Validators.maxLength(50)]],
-});
+    firstName: ['', [Validators.maxLength(100)]],
+    lastName: ['', [Validators.maxLength(100)]],
+    phone: ['', [Validators.maxLength(32), Validators.pattern(AccountComponent.phonePattern)]],
+    avatarUrl: ['', [Validators.maxLength(255)]],
+    address: ['', [Validators.maxLength(255)]],
+    level: ['', [Validators.maxLength(50)]],
+  });
 
   protected passwordForm = this.fb.nonNullable.group(
     {

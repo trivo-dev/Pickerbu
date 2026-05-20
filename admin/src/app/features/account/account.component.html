@@ -81,8 +81,13 @@
 
               <mat-form-field appearance="outline" class="full">
                 <mat-label>Trình độ (level)</mat-label>
-                <input matInput formControlName="level" placeholder="Ví dụ: Beginner" />
-              </mat-form-field>
+                <mat-select formControlName="level">
+                <mat-option value="">Chưa cập nhật</mat-option>
+                  @for (level of levelOptions; track level) {
+             <mat-option [value]="level">{{ level }}</mat-option>
+              }
+            </mat-select>
+            </mat-form-field>
             </div>
             <div class="panel-actions">
               <button mat-flat-button class="btn-primary-pill" type="submit" [disabled]="profileBusy()">
