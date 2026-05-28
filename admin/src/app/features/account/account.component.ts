@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import {
@@ -10,25 +11,28 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../core/services/auth.service';
 import { AccountService } from '../../core/services/account.service';
-import type { User } from '../../core/models/user.model';
+import type { UserType, User } from '../../core/models/user.model';
 
 @Component({
   selector: 'app-account',
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIconModule,
     MatButtonModule,
-    MatExpansionModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
     MatSnackBarModule,
   ],
   templateUrl: './account.component.html',
@@ -36,7 +40,7 @@ import type { User } from '../../core/models/user.model';
 })
 export class AccountComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly auth = inject(AuthService);
+  protected readonly auth = inject(AuthService);
   private readonly account = inject(AccountService);
   private readonly snack = inject(MatSnackBar);
 
@@ -48,14 +52,16 @@ export class AccountComponent implements OnInit {
 
   protected readonly profileBusy = signal(false);
   protected readonly passwordBusy = signal(false);
+  private static readonly phonePattern = /^(|[0-9+\-\s()]+)$/;
+  protected readonly levelOptions = ['Beginner', 'Intermediate', 'Advanced', 'Pro'] as const;
 
   protected profileForm = this.fb.nonNullable.group({
-    firstName: [''],
-    lastName: [''],
-    phone: [''],
-    avatarUrl: [''],
-    address: [''],
-    level: [''],
+    firstName: ['', [Validators.maxLength(100)]],
+    lastName: ['', [Validators.maxLength(100)]],
+    phone: ['', [Validators.maxLength(32), Validators.pattern(AccountComponent.phonePattern)]],
+    avatarUrl: ['', [Validators.maxLength(255)]],
+    address: ['', [Validators.maxLength(255)]],
+    level: ['', [Validators.maxLength(50)]],
   });
 
   protected passwordForm = this.fb.nonNullable.group(
@@ -71,6 +77,42 @@ export class AccountComponent implements OnInit {
     const u = this.auth.user();
     if (u) {
       this.patchFromUser(u);
+    }
+  }
+
+  protected avatarSrc(): string | null {
+    const url = this.auth.user()?.avatarUrl?.trim();
+    return url || null;
+  }
+
+  protected userInitials(): string {
+    const u = this.auth.user();
+    if (!u) {
+      return '?';
+    }
+    const fn = u.firstName?.trim();
+    const ln = u.lastName?.trim();
+    if (fn && ln) {
+      return `${fn.charAt(0)}${ln.charAt(0)}`.toUpperCase();
+    }
+    const raw = (u.displayName?.trim() || u.username || u.email?.split('@')[0] || '?').trim();
+    const segs = raw.split(/\s+/).filter(Boolean);
+    if (segs.length >= 2) {
+      const a = segs[0]?.[0] ?? '?';
+      const b = segs[segs.length - 1]?.[0] ?? '?';
+      return (a + b).toUpperCase();
+    }
+    return raw.slice(0, 2).toUpperCase();
+  }
+
+  protected userTypeLabel(t: UserType): string {
+    switch (t) {
+      case 'ADMIN':
+        return 'Quản trị viên';
+      case 'OWNER':
+        return 'Chủ địa điểm';
+      default:
+        return 'Người chơi';
     }
   }
 

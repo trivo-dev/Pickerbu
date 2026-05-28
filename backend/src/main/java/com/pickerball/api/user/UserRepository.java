@@ -1,5 +1,6 @@
 package com.pickerball.api.user;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -22,4 +23,18 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     boolean existsOtherWithPhone(@Param("phone") String phone, @Param("id") Long id);
 
     long countByUserTypeAndActiveTrue(UserType userType);
+
+    long countByActiveTrue();
+
+    long countByActiveFalse();
+
+    @Query("SELECT u.userType, COUNT(u) FROM User u GROUP BY u.userType")
+    List<Object[]> countGroupedByUserType();
+
+    @Query(
+            value =
+                    "SELECT CAST(created_at AS DATE) AS day_bucket, COUNT(*) FROM users WHERE created_at >= :since "
+                            + "GROUP BY CAST(created_at AS DATE) ORDER BY day_bucket",
+            nativeQuery = true)
+    List<Object[]> countUsersRegisteredPerDaySince(@Param("since") java.sql.Timestamp since);
 }
